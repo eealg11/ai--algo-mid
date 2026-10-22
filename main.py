@@ -243,3 +243,43 @@ if __name__ == '__main__':
     # Cloud Run은 PORT 환경변수를 제공
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port, debug=True)
+def pop(self):
+        """
+        [2-2] Pop 연산: 큐의 맨 앞(Front)에서 요소 제거 및 반환
+        시간 복잡도: O(1)
+        """
+        if self.is_empty():
+            return None, "Queue Underflow: 큐가 비어 있습니다."
+        
+        item = self.queue[self.front]
+        self.queue[self.front] = None  # 데이터 초기화
+        self.front = (self.front + 1) % self.capacity
+        self.size -= 1
+        return item, f"성공적으로 '{item}' 값을 pop 했습니다."
+
+# 전역 큐 인스턴스 (기본 용량: 5)
+        elif action == 'pop':
+            # pop 연산은 별도의 value 매개변수가 필요하지 않음
+            result, msg = global_queue.pop()
+            return jsonify({
+                "status": "success" if result is not None else "error",
+                "action": action,
+                "result": result,
+                "message": msg,
+                "queue_state": global_queue.get_all_elements()
+            }), 200
+
+
+
+@app.route('/', methods=['GET'])
+def home():
+    """서버 작동 상태 확인용 기본 루트 엔드포인트"""
+    return jsonify({
+        "status": "online",
+        "message": "Fixed-Size Queue Cloud Run API Server is running.",
+        "endpoint": "/api/queue"
+    }), 200
+
+
+@app.route('/api/queue', methods=['POST'])
+def queue_controller():
